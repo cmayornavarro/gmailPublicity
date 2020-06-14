@@ -1,10 +1,18 @@
 import React, { Component } from "react";
 
 import logo from "./logo.svg";
-
+import {
+ 
+  Switch, 
+  Route,
+   BrowserRouter as Router 
+} from "react-router-dom";
 import "./App.css";
+import Child from './Child.js';
 
 class App extends Component {
+
+
   state = {
     response: "",
     post: "",
@@ -21,12 +29,11 @@ class App extends Component {
     const response = await fetch("/api/searchData");
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
-    for(var hit of body.hits.hits){
+    for (var hit of body.hits.hits) {
       console.log(hit._source.title);
     }
     return body;
   };
-
 
   createIndexFetch = async (e) => {
     // prevent to reload the page
@@ -71,7 +78,7 @@ class App extends Component {
     this.setState({ responseToPost: body });
   };
 
-    gmailDataFetch = async (e) => {
+  gmailDataFetch = async (e) => {
     e.preventDefault();
     const response = await fetch("/api/fetchGmailData", {
       method: "POST",
@@ -85,14 +92,36 @@ class App extends Component {
     this.setState({ responseToPost: body });
   };
 
+  getGmailValidation = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/getGmailValidation");
+      console.log(response);
+      const body = await response.json();
+      if (response.status !== 200) throw Error(body.message);
+      window.location.replace(body.urlToken);
+      return body;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+
+
   render() {
     return (
       <div className="App">
+      <Router>
+        <Switch>
+          <Route path="/:id?:code"  ><Child /></Route> 
+        </Switch>
+</Router>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
-          </p>
+          </p> 
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -139,7 +168,13 @@ class App extends Component {
           />
           <button type="submit">Submit</button>
         </form>
+        <form onSubmit={this.getGmailValidation}>
+          <p>
+            <strong>Get Gmail Validation</strong>
+          </p>
 
+          <button type="submit">Submit</button>
+        </form>
 
         <p>{this.state.responseToPost}</p>
       </div>

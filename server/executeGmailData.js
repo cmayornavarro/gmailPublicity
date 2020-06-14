@@ -192,12 +192,48 @@ const insertData = async function (indexName, data) {
 };
 
 var executeGmailData = async function (req, res) {
-	// Load client secrets from a local file.
-	fs.readFile("credentials.json", (err, content) => {
-		if (err) return console.log("Error loading client secret file:", err);
-		// Authorize a client with credentials, then call the Gmail API.
-		authorize(JSON.parse(content), getIdEmails);
-	});
+	
+	
+	if( !(req.body.code === undefined)){
+		const oauth2Client = new google.auth.OAuth2(
+		"843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com",
+		"fK8b3hSgIZOG8oQNra5YhsIY",
+		"http://localhost:3000/oauth2callback"
+		);
+
+		try{
+			console.log("before getToken: "+req.body.code);
+		 var {tokens }= await oauth2Client.getToken(req.body.code);
+		 console.log(tokens);
+		
+		oauth2Client.setCredentials(tokens);	
+		getIdEmails(oauth2Client);
+		}catch(e){
+			console.log(e);
+		}
+		
+	}else{
+		// Load client secrets from a local file.
+		fs.readFile("credentials.json", (err, content) => {
+			if (err) return console.log("Error loading client secret file:", err);
+			// Authorize a client with credentials, then call the Gmail API.
+			authorize(JSON.parse(content), getIdEmails);
+		});
+	}
 };
+
+/*var executeGmailData = async function (req, res) {
+	const oauth2Client = new google.auth.OAuth2(
+		"843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com",
+		"1G-7woSgeEuS33bL7dIGqrL9",
+		"http://localhost:3000/oauth2callback"
+	);
+
+
+	const {tokens} = await oauth2Client.getToken(req.query.code)
+	oauth2Client.setCredentials(tokens);
+	getIdEmails(oauth2Client);
+};*/
+
 
 module.exports = executeGmailData;
