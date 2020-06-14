@@ -202,7 +202,7 @@ var executeGmailData = async function (req, res) {
 		);
 
 		try{
-			console.log("before getToken: "+req.body.code);
+			console.log(" a before getToken: "+req.body.code);
 		 var {tokens }= await oauth2Client.getToken(req.body.code);
 		 console.log(tokens);
 		
