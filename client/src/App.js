@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import logo from "./logo.svg";
+import LineChart from "./LineChart.js";
 import {
  
   Switch, 
@@ -10,14 +11,61 @@ import {
 import "./App.css";
 import Child from './Child.js';
 
+function getData() {
+  let data = [];
+
+  data.push({
+    title: 'Visits',
+    data: getRandomDateArray(150)
+  });
+
+  console.log("firstData");
+  console.log(data);
+  return data;
+}
+
+
+// Data generation
+function getRandomArray(numItems) {
+  // Create random array of objects
+  let names = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let data = [];
+  for(var i = 0; i < numItems; i++) {
+    data.push({
+      label: names[i],
+      value: Math.round(20 + 80 * Math.random())
+    });
+  }
+  return data;
+}
+
+function getRandomDateArray(numItems) {
+  // Create random array of objects (with date)
+  let data = [];
+  let baseTime = new Date('2018-05-01T00:00:00').getTime();
+  let dayMs = 24 * 60 * 60 * 1000;
+  for(var i = 0; i < numItems; i++) {
+    data.push({
+      time: new Date(baseTime + i * dayMs),
+      value: Math.round(20 + 80 * Math.random())
+    });
+  }
+  return data;
+}
+
 class App extends Component {
+  constructor(props) {
+    super(props);
 
-
-  state = {
-    response: "",
+    this.state = {
+      data: getData(),
+          response: "",
     post: "",
     responseToPost: "",
-  };
+    };
+  }
+
+
 
   componentDidMount() {
     console.log("mount");
@@ -113,8 +161,22 @@ class App extends Component {
     e.preventDefault();
     try {
       const response = await fetch("/api/getMyGmailData");
-      console.log(response);
+      
       const body = await response.json();
+
+     
+      var buckets = body.aggregations.group_by_body.buckets;
+     let newData = [];
+     let newDataPush = [];
+     buckets.forEach(bucket => newData.push({
+      
+        data: {time:bucket.key,value:bucket.doc_count}
+      }) );
+  
+     newDataPush.push({title:'test',data:newData});
+        this.setState({data:newDataPush});
+         console.log("newDataPush");
+        console.log(newDataPush);
       if (response.status !== 200) throw Error(body.message);
       
       return body;
@@ -199,6 +261,14 @@ class App extends Component {
         </form>        
 
         <p>{this.state.responseToPost}</p>
+
+        <div >
+          <LineChart
+            data={this.state.data[0].data}
+            title={this.state.data[0].title}
+            color="#3E517A"
+          />
+        </div>        
       </div>
     );
   }
