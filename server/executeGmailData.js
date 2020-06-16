@@ -116,6 +116,17 @@ function getIdEmails2(auth) {
 
 function getIdEmails(auth,nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
+	var emailAddress = "";
+gmail.users.getProfile({
+    auth: auth,
+    userId: 'me'
+    }, function(err, res) {
+    if (err) {
+        console.log(err);
+    } else {
+       emailAddress = res.data.emailAddress;
+    }
+});	
 	gmail.users.messages.list(
 		{
 			userId: "me",
@@ -128,7 +139,7 @@ function getIdEmails(auth,nextPage) {
 			if (messages.length) {
 				var arrayOfPromises = [];
 				messages.forEach((message) => {
-					getEmailFrom(auth, message.id);
+					getEmailFrom(auth, message.id,emailAddress);
 				});
 				if(res.data.nextPageToken){
 					try{
@@ -145,7 +156,7 @@ function getIdEmails(auth,nextPage) {
 	);
 }
 
-function getEmailFrom(auth, id) {
+function getEmailFrom(auth, id,emailAddress) {
 	const gmail = google.gmail({ version: "v1", auth });
 	gmail.users.messages.get(
 		{
@@ -164,6 +175,7 @@ function getEmailFrom(auth, id) {
 							title: "Gmail Pub",
 							tags: ["ReactJS", "NodeJS"],
 							body: header.value,
+							emailAddress : emailAddress
 						};
 						try {
 
@@ -171,6 +183,7 @@ function getEmailFrom(auth, id) {
 								constants.INDEX_ELASTIC,
 								data
 							);
+							console.log(data);
 						} catch (e) {
 							console.log(e);
 						}

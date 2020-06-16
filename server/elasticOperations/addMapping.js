@@ -19,8 +19,23 @@ var executeAddMapping = async function (req, res) {
             tags: {
                 type: "text",
             },
+            emailAddress: {
+                type: "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": { 
+                    "type": "keyword"
+                  }
+                }
+            },            
             body: {
                 type: "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": { 
+                    "type": "keyword"
+                  }
+                }
             },
             timestamp: {
                 type: "date",

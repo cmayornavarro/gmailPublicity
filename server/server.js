@@ -11,6 +11,7 @@ var executeAddMapping = require("./elasticOperations/addMapping.js");
 var executeInsert = require("./elasticOperations/insertData.js");
 var executeSearch = require("./elasticOperations/searchData.js");
 var executeGmailData = require("./executeGmailData.js");
+var executeGetMyGmailData = require("./executeGetMyGmailData.js");
 var executeGetGmailValidation = require("./executeGetGmailValidation.js");
 
 app.use(bodyParser.json());
@@ -28,5 +29,6 @@ app.route("/api/createIndex").post(executeCreateIndex);
 app.route("/api/addMapping").post(executeAddMapping);
 app.route("/api/insertData").post(executeInsert);
 app.route("/api/fetchGmailData").post(executeGmailData);
+app.route("/api/getMyGmailData").get(executeGetMyGmailData);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

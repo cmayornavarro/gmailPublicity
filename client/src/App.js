@@ -20,9 +20,12 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.callApi()
+    console.log("mount");
+   //this.setState({ response: "test"});
+    //this.setState({ post: "test2"});
+   /* this.callApi()
       .then((res) => this.setState({ response: res.express }))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err));*/
   }
 
   callApi = async () => {
@@ -106,7 +109,19 @@ class App extends Component {
     }
   };
 
-
+  getMyGmailData = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/getMyGmailData");
+      console.log(response);
+      const body = await response.json();
+      if (response.status !== 200) throw Error(body.message);
+      
+      return body;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 
   render() {
@@ -175,6 +190,13 @@ class App extends Component {
 
           <button type="submit">Submit</button>
         </form>
+        <form onSubmit={this.getMyGmailData}>
+          <p>
+            <strong>Get My Gmail Data</strong>
+          </p>
+
+          <button type="submit">Submit</button>
+        </form>        
 
         <p>{this.state.responseToPost}</p>
       </div>
