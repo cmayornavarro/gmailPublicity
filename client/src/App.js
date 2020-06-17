@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import GoogleLogin from 'react-google-login';
 
 import logo from "./logo.svg";
 import LineChart from "./LineChart.js";
@@ -186,7 +187,20 @@ class App extends Component {
   };
 
 
+
   render() {
+const responseGoogle = (responseToken) => {
+  
+ console.log(responseToken.tokenObj);
+ 
+  const response =  fetch("/api/fetchGmailData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code: responseToken.tokenObj }),
+    });  
+}    
     return (
       <div className="App">
       <Router>
@@ -259,7 +273,13 @@ class App extends Component {
 
           <button type="submit">Submit</button>
         </form>        
-
+<GoogleLogin
+    clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+    buttonText="Login"
+    onSuccess={responseGoogle}
+    onFailure={responseGoogle}
+    cookiePolicy={'single_host_origin'}
+  />
         <p>{this.state.responseToPost}</p>
 
         <div >
