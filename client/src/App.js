@@ -194,16 +194,16 @@ class App extends Component {
       console.log(a); 
     };
 const responseGoogle = (responseToken) => {
-  
+  console.log("a");
  console.log(responseToken.tokenObj);
  
-  const response =  fetch("/api/fetchGmailData", {
+  /*const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: responseToken.tokenObj }),
-    });  
+    });  */
 }    
     return (
       <div className="App">
@@ -282,10 +282,11 @@ const responseGoogle = (responseToken) => {
     buttonText="Login"
     onSuccess={responseGoogle}
     onFailure={responseGoogle}
+     isSignedIn={true}
     cookiePolicy={'single_host_origin'}
   />
   <GoogleLogout
-      clientId="43739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+      clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
       buttonText="Logout"
       onLogoutSuccess={logout}
     />
