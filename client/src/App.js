@@ -1,40 +1,33 @@
 import React, { Component } from "react";
-import GoogleLogin from 'react-google-login';
-    import { GoogleLogout } from 'react-google-login';
+import GoogleLogin from "react-google-login";
+import { GoogleLogout } from "react-google-login";
 
 import logo from "./logo.svg";
 import LineChart from "./LineChart.js";
-import {
- 
-  Switch, 
-  Route,
-   BrowserRouter as Router 
-} from "react-router-dom";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-import Child from './Child.js';
+import Child from "./Child.js";
 
 function getData() {
   let data = [];
 
   data.push({
-    title: 'Visits',
-    data: getRandomDateArray(150)
+    title: "Visits",
+    data: getRandomDateArray(150),
   });
-
 
   return data;
 }
 
-
 // Data generation
 function getRandomArray(numItems) {
   // Create random array of objects
-  let names = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let data = [];
-  for(var i = 0; i < numItems; i++) {
+  for (var i = 0; i < numItems; i++) {
     data.push({
       label: names[i],
-      value: Math.round(20 + 80 * Math.random())
+      value: Math.round(20 + 80 * Math.random()),
     });
   }
   return data;
@@ -43,12 +36,12 @@ function getRandomArray(numItems) {
 function getRandomDateArray(numItems) {
   // Create random array of objects (with date)
   let data = [];
-  let baseTime = new Date('2018-05-01T00:00:00').getTime();
+  let baseTime = new Date("2018-05-01T00:00:00").getTime();
   let dayMs = 24 * 60 * 60 * 1000;
-  for(var i = 0; i < numItems; i++) {
+  for (var i = 0; i < numItems; i++) {
     data.push({
       time: new Date(baseTime + i * dayMs),
-      value: Math.round(20 + 80 * Math.random())
+      value: Math.round(20 + 80 * Math.random()),
     });
   }
   return data;
@@ -60,19 +53,18 @@ class App extends Component {
 
     this.state = {
       data: getData(),
-          response: "",
-    post: "",
-    responseToPost: "",
+      response: "",
+      post: "",
+      responseToPost: "",
+      mygmailAdress:""
     };
   }
 
-
-
   componentDidMount() {
     console.log("mount");
-   //this.setState({ response: "test"});
+    //this.setState({ response: "test"});
     //this.setState({ post: "test2"});
-   /* this.callApi()
+    /* this.callApi()
       .then((res) => this.setState({ response: res.express }))
       .catch((err) => console.log(err));*/
   }
@@ -162,61 +154,60 @@ class App extends Component {
     e.preventDefault();
     try {
       const response = await fetch("/api/getMyGmailData");
-      
+
       const body = await response.json();
 
-     
       var buckets = body.aggregations.group_by_body.buckets;
-     let newData = [];
-     let newDataPush = [];
-     buckets.forEach(bucket => newData.push({
-      
-        data: {time:bucket.key,value:bucket.doc_count}
-      }) );
-  
-     newDataPush.push({title:'test',data:newData});
-        this.setState({data:newDataPush});
-         console.log("newDataPush");
-        console.log(newDataPush);
+      let newData = [];
+      let newDataPush = [];
+      buckets.forEach((bucket) =>
+        newData.push({
+          data: { time: bucket.key, value: bucket.doc_count },
+        })
+      );
+
+      newDataPush.push({ title: "test", data: newData });
+      this.setState({ data: newDataPush });
+      console.log("newDataPush");
+      console.log(newDataPush);
       if (response.status !== 200) throw Error(body.message);
-      
+
       return body;
     } catch (error) {
       console.log(error);
     }
   };
 
-
-
   render() {
-
     const logout = (a) => {
-      console.log(a); 
+      console.log(a);
     };
-const responseGoogle = (responseToken) => {
-  console.log("a");
- console.log(responseToken.tokenObj);
- 
-  /*const response =  fetch("/api/fetchGmailData", {
+    const responseGoogle = (responseToken) => {
+      console.log("a");
+      console.log(responseToken.profileObj.email);//set here in state
+
+      /*const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: responseToken.tokenObj }),
     });  */
-}    
+    };
     return (
       <div className="App">
-      <Router>
-        <Switch>
-          <Route path="/:id?:code"  ><Child /></Route> 
-        </Switch>
-</Router>
+        <Router>
+          <Switch>
+            <Route path="/:id?:code">
+              <Child />
+            </Route>
+          </Switch>
+        </Router>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
-          </p> 
+          </p>
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -276,30 +267,30 @@ const responseGoogle = (responseToken) => {
           </p>
 
           <button type="submit">Submit</button>
-        </form>        
-<GoogleLogin
-    clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-    buttonText="Login"
-    onSuccess={responseGoogle}
-    onFailure={responseGoogle}
-     isSignedIn={true}
-    cookiePolicy={'single_host_origin'}
-  />
-  <GoogleLogout
-      clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-      buttonText="Logout"
-      onLogoutSuccess={logout}
-    />
-   
+        </form>
+        <GoogleLogin
+          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+          buttonText="Login"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          isSignedIn={true}
+          cookiePolicy={"single_host_origin"}
+        />
+     {/*   <GoogleLogout
+          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+          buttonText="Logout"
+          onLogoutSuccess={logout}
+        />*/}
+
         <p>{this.state.responseToPost}</p>
 
-        <div >
+        <div>
           <LineChart
             data={this.state.data[0].data}
             title={this.state.data[0].title}
             color="#3E517A"
           />
-        </div>        
+        </div>
       </div>
     );
   }
