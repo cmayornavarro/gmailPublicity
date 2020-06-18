@@ -24,12 +24,13 @@ app.all("*", (req, res, next) => {
     return next();
 });
 app.route("/api/searchData").get(executeSearch);
-app.route("/api/getGmailValidation").get(executeGetGmailValidation);
-app.route("/api/getMyGmailData").get(executeGetMyGmailData);
+
 app.route("/api/createIndex").post(executeCreateIndex);
 app.route("/api/addMapping").post(executeAddMapping);
 app.route("/api/insertData").post(executeInsert);
-app.route("/api/fetchGmailData").post(executeGmailData);
 
+app.route("/api/fetchGmailData").post(executeGmailData);
+app.route("/api/getGmailValidation").get(executeGetGmailValidation);
+app.route("/api/getMyGmailData").get(executeGetMyGmailData);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

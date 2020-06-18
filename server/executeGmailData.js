@@ -114,24 +114,27 @@ function getIdEmails2(auth) {
 		});
 }
 
-function getIdEmails(auth,nextPage) {
+function getIdEmails(auth, nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
 	var emailAddress = "";
-gmail.users.getProfile({
-    auth: auth,
-    userId: 'me'
-    }, function(err, res) {
-    if (err) {
-        console.log(err);
-    } else {
-       emailAddress = res.data.emailAddress;
-    }
-});	
+	gmail.users.getProfile(
+		{
+			auth: auth,
+			userId: "me",
+		},
+		function (err, res) {
+			if (err) {
+				console.log(err);
+			} else {
+				emailAddress = res.data.emailAddress;
+			}
+		}
+	);
 	gmail.users.messages.list(
 		{
 			userId: "me",
 			labelIds: "CATEGORY_PROMOTIONS",
-			pageToken: nextPage
+			pageToken: nextPage,
 		},
 		(err, res) => {
 			if (err) return console.log("The API returned an error: " + err);
@@ -139,13 +142,13 @@ gmail.users.getProfile({
 			if (messages.length) {
 				var arrayOfPromises = [];
 				messages.forEach((message) => {
-					getEmailFrom(auth, message.id,emailAddress);
+					getEmailFrom(auth, message.id, emailAddress);
 				});
-				if(res.data.nextPageToken){
-					try{
+				if (res.data.nextPageToken) {
+					try {
 						console.log("nextPageToken: " + res.data.nextPageToken);
-						getIdEmails(auth,res.data.nextPageToken);
-					}catch(e){
+						getIdEmails(auth, res.data.nextPageToken);
+					} catch (e) {
 						console.log(e);
 					}
 				}
@@ -156,7 +159,7 @@ gmail.users.getProfile({
 	);
 }
 
-function getEmailFrom(auth, id,emailAddress) {
+function getEmailFrom(auth, id, emailAddress) {
 	const gmail = google.gmail({ version: "v1", auth });
 	gmail.users.messages.get(
 		{
@@ -175,11 +178,10 @@ function getEmailFrom(auth, id,emailAddress) {
 							title: "Gmail Pub",
 							tags: ["ReactJS", "NodeJS"],
 							body: header.value,
-							emailAddress : emailAddress
+							emailAddress: emailAddress,
 						};
 						try {
-
-							const resp =  insertData(
+							const resp = insertData(
 								constants.INDEX_ELASTIC,
 								data
 							);
@@ -205,37 +207,33 @@ const insertData = async function (indexName, data) {
 };
 
 var executeGmailData = async function (req, res) {
-	
-	
-	if( !(req.body.code === undefined)){
+	if (!(req.body.code === undefined)) {
 		const oauth2Client = new google.auth.OAuth2(
-		"843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com",
-		"fK8b3hSgIZOG8oQNra5YhsIY",
-		"http://localhost:3000/oauth2callback"
+			"843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com",
+			"fK8b3hSgIZOG8oQNra5YhsIY",
+			"http://localhost:3000/oauth2callback"
 		);
 
-		try{
+		try {
 			
-			console.log(" a before getToken: "+req.body.code);
-			var newToken = JSON.parse(JSON.stringify(req.body.code));		
-				console.log("newToken");
+			var newToken = JSON.parse(JSON.stringify(req.body.code));
+			console.log("newToken");
 			console.log(newToken);
-		 //var {tokens }= await oauth2Client.getToken(req.body.code);
-		 
-				
-		//var newToken = JSON.stringify(req.body.code);		
-		oauth2Client.setCredentials(newToken);	
-		
-		//oauth2Client.setCredentials(tokens);	
-		getIdEmails(oauth2Client);
-		}catch(e){
+			//var {tokens }= await oauth2Client.getToken(req.body.code);
+
+			//var newToken = JSON.stringify(req.body.code);
+			oauth2Client.setCredentials(newToken);
+
+			//oauth2Client.setCredentials(tokens);
+			getIdEmails(oauth2Client);
+		} catch (e) {
 			console.log(e);
 		}
-		
-	}else{
+	} else {
 		// Load client secrets from a local file.
 		fs.readFile("credentials.json", (err, content) => {
-			if (err) return console.log("Error loading client secret file:", err);
+			if (err)
+				return console.log("Error loading client secret file:", err);
 			// Authorize a client with credentials, then call the Gmail API.
 			authorize(JSON.parse(content), getIdEmails);
 		});
@@ -254,6 +252,5 @@ var executeGmailData = async function (req, res) {
 	oauth2Client.setCredentials(tokens);
 	getIdEmails(oauth2Client);
 };*/
-
 
 module.exports = executeGmailData;

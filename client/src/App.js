@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GoogleLogin from 'react-google-login';
+    import { GoogleLogout } from 'react-google-login';
 
 import logo from "./logo.svg";
 import LineChart from "./LineChart.js";
@@ -20,8 +21,7 @@ function getData() {
     data: getRandomDateArray(150)
   });
 
-  console.log("firstData");
-  console.log(data);
+
   return data;
 }
 
@@ -189,6 +189,10 @@ class App extends Component {
 
 
   render() {
+
+    const logout = (a) => {
+      console.log(a); 
+    };
 const responseGoogle = (responseToken) => {
   
  console.log(responseToken.tokenObj);
@@ -280,6 +284,12 @@ const responseGoogle = (responseToken) => {
     onFailure={responseGoogle}
     cookiePolicy={'single_host_origin'}
   />
+  <GoogleLogout
+      clientId="43739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+      buttonText="Logout"
+      onLogoutSuccess={logout}
+    />
+   
         <p>{this.state.responseToPost}</p>
 
         <div >
