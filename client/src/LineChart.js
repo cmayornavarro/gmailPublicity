@@ -9,8 +9,10 @@ export default  class LineChart extends React.Component {
   componentDidUpdate() {
     console.log("Compontent");
     console.log(this.props.data);
-    this.myChart.data.labels = this.props.data.map(d => d.data.time);
-    this.myChart.data.datasets[0].data = this.props.data.map(d => d.data.value);
+    //this.myChart.data.labels = this.props.data.map(d => d.data.time);
+    //this.myChart.data.datasets[0].data = this.props.data.map(d => d.data.value);
+    this.myChart.data.labels = this.props.data.map(d => d.time);
+    this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);    
     console.log( ">>>");
     console.log(   this.myChart.data.datasets[0].label);
     this.myChart.data.datasets[0].label = this.props.title;

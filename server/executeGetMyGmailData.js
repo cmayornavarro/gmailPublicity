@@ -10,6 +10,7 @@ const searchData = async function (indexName, query) {
 };
 
 const getMyGmailData = async function (req, res) {
+	console.log(req.query.mygmailAdress);
 	var emailAddress="cmayor.navarro@gmail.com"
 	const query = {
 		query: {
@@ -26,8 +27,8 @@ const getMyGmailData = async function (req, res) {
 		}
 	};
 	try {
-		const resp = await searchData(constants.INDEX_ELASTIC, query);
-		res.send(resp);
+		//const resp = await searchData(constants.INDEX_ELASTIC, query);
+		//res.send(resp);
 	} catch (e) {
 		console.log(e);
 	}

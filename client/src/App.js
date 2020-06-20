@@ -153,7 +153,7 @@ class App extends Component {
   getMyGmailData = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/getMyGmailData");
+      const response = await fetch("/api/getMyGmailData?mygmailAdress="+this.state.mygmailAdress);
 
       const body = await response.json();
 
@@ -185,7 +185,7 @@ class App extends Component {
     const responseGoogle = (responseToken) => {
       console.log("a");
       console.log(responseToken.profileObj.email);//set here in state
-
+      this.setState({ mygmailAdress: responseToken.profileObj.email}); 
       /*const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
