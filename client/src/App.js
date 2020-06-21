@@ -56,7 +56,8 @@ class App extends Component {
       response: "",
       post: "",
       responseToPost: "",
-      mygmailAdress:""
+      mygmailAdress:"",
+      myToken:""
     };
   }
 
@@ -128,8 +129,8 @@ class App extends Component {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ post: this.state.post }),
+      },  
+      body: JSON.stringify({ code: this.state.myToken }),
     });
     const body = await response.text();
 
@@ -186,13 +187,14 @@ class App extends Component {
       console.log("a");
       console.log(responseToken.profileObj.email);//set here in state
       this.setState({ mygmailAdress: responseToken.profileObj.email}); 
-      /*const response =  fetch("/api/fetchGmailData", {
+      this.setState({ myToken: responseToken.tokenObj}); 
+      const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: responseToken.tokenObj }),
-    });  */
+    });  
     };
     return (
       <div className="App">
@@ -271,6 +273,7 @@ class App extends Component {
         <GoogleLogin
           clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
           buttonText="Login"
+          scope="https://www.googleapis.com/auth/gmail.readonly"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
           isSignedIn={true}

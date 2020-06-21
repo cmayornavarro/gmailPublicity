@@ -116,7 +116,8 @@ function getIdEmails2(auth) {
 
 function getIdEmails(auth, nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
-	var emailAddress = "";
+	var emailAddress = "cmayor.navarro@gmail.com";
+
 	gmail.users.getProfile(
 		{
 			auth: auth,
@@ -210,7 +211,7 @@ var executeGmailData = async function (req, res) {
 	if (!(req.body.code === undefined)) {
 		const oauth2Client = new google.auth.OAuth2(
 			"843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com",
-			"fK8b3hSgIZOG8oQNra5YhsIY",
+			"Em3XxMJSzBRv0mWg8tBl8vIq",
 			"http://localhost:3000/oauth2callback"
 		);
 
@@ -228,6 +229,7 @@ var executeGmailData = async function (req, res) {
 			getIdEmails(oauth2Client);
 		} catch (e) {
 			console.log(e);
+
 		}
 	} else {
 		// Load client secrets from a local file.
