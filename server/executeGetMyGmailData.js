@@ -10,12 +10,12 @@ const searchData = async function (indexName, query) {
 };
 
 const getMyGmailData = async function (req, res) {
-	
+
 	var emailAddress="cmayor.navarro@gmail.com"
 	const query = {
 		query: {
 			bool: {
-				must: [{ match: { emailAddress: emailAddress } }],
+				must: [{ match: { "emailAddress.keyword": req.query.mygmailAdress } }],
 			}
 		},
 		aggs: {

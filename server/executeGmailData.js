@@ -116,7 +116,7 @@ function getIdEmails2(auth) {
 
 function getIdEmails(auth, nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
-	var emailAddress = "cmayor.navarro@gmail.com";
+	var emailAddress = "";
 
 	gmail.users.getProfile(
 		{

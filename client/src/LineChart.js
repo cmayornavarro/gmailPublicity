@@ -7,32 +7,26 @@ export default  class LineChart extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log("Compontent");
-    console.log(this.props.data[0].data);
-    if(  this.props.data[0].data ){
-         console.log("undefined");
-    this.myChart.data.labels = this.props.data.map(d => d.data.time);
-    this.myChart.data.datasets[0].data = this.props.data.map(d => d.data.value);
-  }else{
-       console.log("nt undefined");
-    this.myChart.data.labels = this.props.data.map(d => d.time);
-    this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);    
-  }
-    console.log( ">>>");
-    console.log(   this.myChart.data.datasets[0].label);
+   
+    let auxData = [];
+    this.myChart.data.labels = this.props.data.map(d => d.count);
+    this.myChart.data.datasets[0].data = this.props.data.map(d => d.company);         
     this.myChart.data.datasets[0].label = this.props.title;
     this.myChart.update();
   }
 
   componentDidMount() {
+  
+    console.log(this.props.data);
+    console.log(this.props.title);
     this.myChart = new Chart(this.chartRef.current, {
       type: 'horizontalBar',
       
       data: {
-        labels: this.props.data.map(d => d.time),
+        labels: this.props.data.map(d => d.count),
         datasets: [{
           label: this.props.title,
-          data: this.props.data.map(d => d.value),
+          data: this.props.data.map(d => d.company),
           fill: 'none',
           "backgroundColor":["rgba(255, 99, 132, 0.2)","rgba(255, 159, 64, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)","rgba(54, 162, 235, 0.2)","rgba(153, 102, 255, 0.2)","rgba(201, 203, 207, 0.2)"]
           ,"borderColor":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)","rgb(75, 192, 192)","rgb(54, 162, 235)","rgb(153, 102, 255)","rgb(201, 203, 207)"],

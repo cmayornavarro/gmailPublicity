@@ -7,6 +7,9 @@ import LineChart from "./LineChart.js";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 import Child from "./Child.js";
+import AdminPage from "./AdminPage.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
 function getData() {
   let data = [];
@@ -56,8 +59,10 @@ class App extends Component {
       response: "",
       post: "",
       responseToPost: "",
-      mygmailAdress:"",
-      myToken:""
+      mygmailAdress: "",
+      myToken: "",
+      isAdmin: false,
+      name:""
     };
   }
 
@@ -80,56 +85,13 @@ class App extends Component {
     return body;
   };
 
-  createIndexFetch = async (e) => {
-    // prevent to reload the page
-    e.preventDefault();
-    const response = await fetch("/api/createIndex", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ post: this.state.post }),
-    });
-    const body = await response.text();
-
-    this.setState({ responseToPost: body });
-  };
-
-  addMappingFetch = async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/addMapping", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ post: this.state.post }),
-    });
-    const body = await response.text();
-
-    this.setState({ responseToPost: body });
-  };
-
-  insertDataFetch = async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/insertData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ post: this.state.post }),
-    });
-    const body = await response.text();
-
-    this.setState({ responseToPost: body });
-  };
-
   gmailDataFetch = async (e) => {
     e.preventDefault();
     const response = await fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      },  
+      },
       body: JSON.stringify({ code: this.state.myToken }),
     });
     const body = await response.text();
@@ -137,25 +99,12 @@ class App extends Component {
     this.setState({ responseToPost: body });
   };
 
-  getGmailValidation = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("/api/getGmailValidation");
-      console.log(response);
-      const body = await response.json();
-      if (response.status !== 200) throw Error(body.message);
-      window.location.replace(body.urlToken);
-      return body;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   getMyGmailData = async (e) => {
-    if(e)
-      e.preventDefault();
+    if (e) e.preventDefault();
     try {
-      const response = await fetch("/api/getMyGmailData?mygmailAdress="+this.state.mygmailAdress);
+      const response = await fetch(
+        "/api/getMyGmailData?mygmailAdress=" + this.state.mygmailAdress
+      );
 
       const body = await response.json();
 
@@ -163,15 +112,12 @@ class App extends Component {
       let newData = [];
       let newDataPush = [];
       buckets.forEach((bucket) =>
-        newData.push({
-          data: { time: bucket.key, value: bucket.doc_count },
-        })
+        newData.push({ count: bucket.key, company: bucket.doc_count })
       );
 
-      newDataPush.push({ title: "test", data: newData });
+      newDataPush.push({ title: "My adds", data: newData });
       this.setState({ data: newDataPush });
-      console.log("newDataPush");
-      console.log(newDataPush);
+
       if (response.status !== 200) throw Error(body.message);
 
       return body;
@@ -186,11 +132,18 @@ class App extends Component {
     };
     const responseGoogle = async (responseToken) => {
       console.log("a");
-      console.log(responseToken.profileObj.email);//set here in state
-      this.setState({ mygmailAdress: responseToken.profileObj.email}); 
-      this.setState({ myToken: responseToken.tokenObj}); 
+
+      console.log(responseToken.profileObj); //set here in state
+      this.setState({ mygmailAdress: responseToken.profileObj.email });
+      this.setState({ myToken: responseToken.tokenObj });
+      this.setState({ name: responseToken.profileObj.givenName });
+      if(responseToken.profileObj.email== "cmayor.navarro@gmail.com"){
+        this.setState({ isAdmin:true});
+      }else{
+        this.setState({ isAdmin:false});
+      }
       await this.getMyGmailData();
-    /* const response =  fetch("/api/fetchGmailData", {
+      /* const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -207,7 +160,7 @@ class App extends Component {
             </Route>
           </Switch>
         </Router>
-        <header className="App-header">
+        {/*        <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
@@ -220,51 +173,51 @@ class App extends Component {
           >
             Learn React
           </a>
-        </header>
+        </header>*/}
+
+        <Navbar bg="success" variant="dark">
+          <Navbar.Brand href="#home">
+            <img
+              src={logo}
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt="React Bootstrap logo"
+            />
+          </Navbar.Brand>
+
+          <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#features">Add analysis</Nav.Link>
+            {this.state.isAdmin ? (
+              <Nav.Link href="#adminSettings">Admin Settings</Nav.Link>
+            ) : null}
+          </Nav>
+<div class="float-right">
+                    <GoogleLogin
+          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+          buttonText={this.state.name}
+          scope="https://www.googleapis.com/auth/gmail.readonly"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          isSignedIn={true}
+          cookiePolicy={"single_host_origin"}
+
+        />
+</div>          
+        </Navbar>
+
         <p>{this.state.response}</p>
 
-        <form onSubmit={this.createIndexFetch}>
-          <p>
-            <strong>CreateIndex:</strong>
-          </p>
-          <button type="submit">Submit</button>
-        </form>
-        <form onSubmit={this.addMappingFetch}>
-          <p>
-            <strong>Add Mapping:</strong>
-          </p>
-
-          <button type="submit">Submit</button>
-        </form>
-        <form onSubmit={this.insertDataFetch}>
-          <p>
-            <strong>Insert Data:</strong>
-          </p>
-          <input
-            type="text"
-            value={this.state.post}
-            onChange={(e) => this.setState({ post: e.target.value })}
-          />
-          <button type="submit">Submit</button>
-        </form>
+         {this.state.isAdmin ? ( <AdminPage />  ) : null}
         <form onSubmit={this.gmailDataFetch}>
           <p>
             <strong>Save mails in database</strong>
           </p>
-          <input
-            type="text"
-            value={this.state.post}
-            onChange={(e) => this.setState({ post: e.target.value })}
-          />
-          <button type="submit">Submit</button>
-        </form>
-        <form onSubmit={this.getGmailValidation}>
-          <p>
-            <strong>Get Gmail Validation</strong>
-          </p>
 
           <button type="submit">Submit</button>
         </form>
+
         <form onSubmit={this.getMyGmailData}>
           <p>
             <strong>Get My Gmail Data</strong>
@@ -272,22 +225,14 @@ class App extends Component {
 
           <button type="submit">Submit</button>
         </form>
-        <GoogleLogin
-          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-          buttonText="Login"
-          scope="https://www.googleapis.com/auth/gmail.readonly"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          isSignedIn={true}
-          cookiePolicy={"single_host_origin"}
-        />
-     {/*   <GoogleLogout
+
+        {/*   <GoogleLogout
           clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
           buttonText="Logout"
           onLogoutSuccess={logout}
         />*/}
 
-        <p>{this.state.responseToPost}</p>
+     
 
         <div>
           <LineChart
