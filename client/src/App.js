@@ -152,7 +152,8 @@ class App extends Component {
   };
 
   getMyGmailData = async (e) => {
-    e.preventDefault();
+    if(e)
+      e.preventDefault();
     try {
       const response = await fetch("/api/getMyGmailData?mygmailAdress="+this.state.mygmailAdress);
 
@@ -183,18 +184,19 @@ class App extends Component {
     const logout = (a) => {
       console.log(a);
     };
-    const responseGoogle = (responseToken) => {
+    const responseGoogle = async (responseToken) => {
       console.log("a");
       console.log(responseToken.profileObj.email);//set here in state
       this.setState({ mygmailAdress: responseToken.profileObj.email}); 
       this.setState({ myToken: responseToken.tokenObj}); 
-      const response =  fetch("/api/fetchGmailData", {
+      await this.getMyGmailData();
+    /* const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: responseToken.tokenObj }),
-    });  
+    });  */
     };
     return (
       <div className="App">
@@ -247,7 +249,7 @@ class App extends Component {
         </form>
         <form onSubmit={this.gmailDataFetch}>
           <p>
-            <strong>Gmail Data:</strong>
+            <strong>Save mails in database</strong>
           </p>
           <input
             type="text"

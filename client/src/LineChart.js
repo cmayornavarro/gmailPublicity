@@ -8,11 +8,16 @@ export default  class LineChart extends React.Component {
 
   componentDidUpdate() {
     console.log("Compontent");
-    console.log(this.props.data);
-    //this.myChart.data.labels = this.props.data.map(d => d.data.time);
-    //this.myChart.data.datasets[0].data = this.props.data.map(d => d.data.value);
+    console.log(this.props.data[0].data);
+    if(  this.props.data[0].data ){
+         console.log("undefined");
+    this.myChart.data.labels = this.props.data.map(d => d.data.time);
+    this.myChart.data.datasets[0].data = this.props.data.map(d => d.data.value);
+  }else{
+       console.log("nt undefined");
     this.myChart.data.labels = this.props.data.map(d => d.time);
     this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);    
+  }
     console.log( ">>>");
     console.log(   this.myChart.data.datasets[0].label);
     this.myChart.data.datasets[0].label = this.props.title;
