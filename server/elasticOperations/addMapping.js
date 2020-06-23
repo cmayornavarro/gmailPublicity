@@ -46,6 +46,7 @@ var executeAddMapping = async function (req, res) {
     try {
         const resp = await addmappingToIndex(constants.INDEX_ELASTIC, mapping);
         console.log(resp);
+        res.status(200).json({message: "Mapping added"});
     } catch (e) {
         console.log(e);
     }

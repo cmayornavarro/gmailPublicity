@@ -10,7 +10,7 @@ import "./App.css";
 import AdminPage from "./AdminPage.js";
 import AdAnalysis from "./AdAnalysis.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
+import { Button, Navbar, Nav, Form, FormControl,Card,CardDeck } from "react-bootstrap";
 
 function getData() {
   let data = [];
@@ -64,6 +64,7 @@ class App extends Component {
       myToken: "",
       isAdmin: false,
       name: "",
+     
     };
   }
 

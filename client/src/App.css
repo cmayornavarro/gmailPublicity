@@ -7,6 +7,16 @@
   pointer-events: none;
 }
 
+.spaceBar {
+  padding: 25px 50px;
+}
+
+.spaceSVG {
+   padding-top: 25px;
+   vertical-align: middle;
+   height: 80px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
