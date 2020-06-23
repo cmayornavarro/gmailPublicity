@@ -3,11 +3,12 @@ import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
 
 import logo from "./logo.svg";
-import LineChart from "./LineChart.js";
+
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-import Child from "./Child.js";
+
 import AdminPage from "./AdminPage.js";
+import AdAnalysis from "./AdAnalysis.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Navbar, Nav, Form, FormControl } from "react-bootstrap";
 
@@ -62,7 +63,7 @@ class App extends Component {
       mygmailAdress: "",
       myToken: "",
       isAdmin: false,
-      name:""
+      name: "",
     };
   }
 
@@ -74,30 +75,6 @@ class App extends Component {
       .then((res) => this.setState({ response: res.express }))
       .catch((err) => console.log(err));*/
   }
-
-  callApi = async () => {
-    const response = await fetch("/api/searchData");
-    const body = await response.json();
-    if (response.status !== 200) throw Error(body.message);
-    for (var hit of body.hits.hits) {
-      console.log(hit._source.title);
-    }
-    return body;
-  };
-
-  gmailDataFetch = async (e) => {
-    e.preventDefault();
-    const response = await fetch("/api/fetchGmailData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ code: this.state.myToken }),
-    });
-    const body = await response.text();
-
-    this.setState({ responseToPost: body });
-  };
 
   getMyGmailData = async (e) => {
     if (e) e.preventDefault();
@@ -137,10 +114,10 @@ class App extends Component {
       this.setState({ mygmailAdress: responseToken.profileObj.email });
       this.setState({ myToken: responseToken.tokenObj });
       this.setState({ name: responseToken.profileObj.givenName });
-      if(responseToken.profileObj.email== "cmayor.navarro@gmail.com"){
-        this.setState({ isAdmin:true});
-      }else{
-        this.setState({ isAdmin:false});
+      if (responseToken.profileObj.email == "cmayor.navarro@gmail.com") {
+        this.setState({ isAdmin: true });
+      } else {
+        this.setState({ isAdmin: false });
       }
       await this.getMyGmailData();
       /* const response =  fetch("/api/fetchGmailData", {
@@ -153,11 +130,44 @@ class App extends Component {
     };
     return (
       <div className="App">
+        <Navbar bg="success" variant="dark">
+          <Navbar.Brand href="#home">
+            <img
+              src={logo}
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt="React Bootstrap logo"
+            />
+          </Navbar.Brand>
+
+          <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="adAnalysis">Ad analysis</Nav.Link>
+            {this.state.isAdmin ? (
+              <Nav.Link href="adminSettings">Admin Settings</Nav.Link>
+            ) : null}
+          </Nav>
+          <div className="float-right">
+            <GoogleLogin
+              clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+              buttonText={this.state.name}
+              scope="https://www.googleapis.com/auth/gmail.readonly"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              isSignedIn={true}
+              cookiePolicy={"single_host_origin"}
+            />
+          </div>
+        </Navbar>
         <Router>
           <Switch>
-            <Route path="/:id?:code">
-              <Child />
+            <Route path="/adminSettings">              
+               {this.state.isAdmin ? <AdminPage /> : null}
             </Route>
+            <Route path="/adAnalysis">
+                    <AdAnalysis state={this.state} />
+            </Route>            
           </Switch>
         </Router>
         {/*        <header className="App-header">
@@ -175,72 +185,8 @@ class App extends Component {
           </a>
         </header>*/}
 
-        <Navbar bg="success" variant="dark">
-          <Navbar.Brand href="#home">
-            <img
-              src={logo}
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-              alt="React Bootstrap logo"
-            />
-          </Navbar.Brand>
 
-          <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Add analysis</Nav.Link>
-            {this.state.isAdmin ? (
-              <Nav.Link href="#adminSettings">Admin Settings</Nav.Link>
-            ) : null}
-          </Nav>
-<div class="float-right">
-                    <GoogleLogin
-          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-          buttonText={this.state.name}
-          scope="https://www.googleapis.com/auth/gmail.readonly"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          isSignedIn={true}
-          cookiePolicy={"single_host_origin"}
 
-        />
-</div>          
-        </Navbar>
-
-        <p>{this.state.response}</p>
-
-         {this.state.isAdmin ? ( <AdminPage />  ) : null}
-        <form onSubmit={this.gmailDataFetch}>
-          <p>
-            <strong>Save mails in database</strong>
-          </p>
-
-          <button type="submit">Submit</button>
-        </form>
-
-        <form onSubmit={this.getMyGmailData}>
-          <p>
-            <strong>Get My Gmail Data</strong>
-          </p>
-
-          <button type="submit">Submit</button>
-        </form>
-
-        {/*   <GoogleLogout
-          clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-          buttonText="Logout"
-          onLogoutSuccess={logout}
-        />*/}
-
-     
-
-        <div>
-          <LineChart
-            data={this.state.data[0].data}
-            title={this.state.data[0].title}
-            color="#3E517A"
-          />
-        </div>
       </div>
     );
   }
