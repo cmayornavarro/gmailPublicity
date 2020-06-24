@@ -13,7 +13,7 @@ export default class AdminPage extends React.Component {
     console.log("mygmailAdress");
     console.log(this.props);
     this.state = {
-      data: props.data,
+      data: [],
       mygmailAdress: props.mygmailAdress,
       myToken: props.myToken,
       isError: false,
@@ -23,18 +23,19 @@ export default class AdminPage extends React.Component {
       spinnerAnalyse: false,
       spinnerGetPublicity: false,
       spinnerGetSpam: false,
+      getDataGraph:false
     };
   }
   componentDidUpdate() {
     console.log("componentDidUpdate");
 
     this.mygmailAdress = this.props.mygmailAdress;
-    this.data = this.props.mygmailAdress;
+ 
     this.myToken = this.props.myToken;
   }
   componentDidMount() {
-    console.log("componentDidMount");
-    this.getMyGmailData();
+    console.log("componentDidMount getMyGmailData");
+  //  this.getMyGmailData();
   }
 
   getMyGmailData = async (e) => {
@@ -55,13 +56,14 @@ export default class AdminPage extends React.Component {
       );
 
       newDataPush.push({ title: "My adds", data: newData });
+        this.data = newDataPush;
       this.setState({ data: newDataPush });
 
       if (response.status !== 200) throw Error(body.message);
-      this.setState({ spinnerGetPublicity: false });
+      this.setState({ spinnerGetPublicity: false,getDataGraph:true });
       return body;
     } catch (error) {
-      this.setState({ spinnerGetPublicity: false });
+      this.setState({ spinnerGetPublicity:false, getDataGraph:false });
       console.log(error);
     }
   };
@@ -225,11 +227,13 @@ export default class AdminPage extends React.Component {
         />*/}
 
         <div>
+      
+            {this.state.getDataGraph ? (
           <LineChart
             data={this.state.data[0].data}
             title={this.state.data[0].title}
             color="#3E517A"
-          />
+          />):null}
         </div>
       </div>
     );

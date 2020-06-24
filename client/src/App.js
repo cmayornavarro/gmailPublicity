@@ -9,8 +9,17 @@ import "./App.css";
 
 import AdminPage from "./AdminPage.js";
 import AdAnalysis from "./AdAnalysis.js";
+import Home from "./home.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Navbar, Nav, Form, FormControl,Card,CardDeck } from "react-bootstrap";
+import {
+  Button,
+  Navbar,
+  Nav,
+  Form,
+  FormControl,
+  Card,
+  CardDeck,
+} from "react-bootstrap";
 
 function getData() {
   let data = [];
@@ -64,7 +73,6 @@ class App extends Component {
       myToken: "",
       isAdmin: false,
       name: "",
-     
     };
   }
 
@@ -77,31 +85,9 @@ class App extends Component {
       .catch((err) => console.log(err));*/
   }
 
-  getMyGmailData = async (e) => {
+  logOK = async (e) => {
     if (e) e.preventDefault();
-    try {
-      const response = await fetch(
-        "/api/getMyGmailData?mygmailAdress=" + this.state.mygmailAdress
-      );
-
-      const body = await response.json();
-
-      var buckets = body.aggregations.group_by_body.buckets;
-      let newData = [];
-      let newDataPush = [];
-      buckets.forEach((bucket) =>
-        newData.push({ count: bucket.key, company: bucket.doc_count })
-      );
-
-      newDataPush.push({ title: "My adds", data: newData });
-      this.setState({ data: newDataPush });
-
-      if (response.status !== 200) throw Error(body.message);
-
-      return body;
-    } catch (error) {
-      console.log(error);
-    }
+    console.log("ok");
   };
 
   render() {
@@ -113,6 +99,7 @@ class App extends Component {
 
       console.log(responseToken.profileObj); //set here in state
       this.setState({ mygmailAdress: responseToken.profileObj.email });
+      console.log(this.state.mygmailAdress);
       this.setState({ myToken: responseToken.tokenObj });
       this.setState({ name: responseToken.profileObj.givenName });
       if (responseToken.profileObj.email == "cmayor.navarro@gmail.com") {
@@ -120,7 +107,8 @@ class App extends Component {
       } else {
         this.setState({ isAdmin: false });
       }
-      await this.getMyGmailData();
+      await this.logOK();
+      console.log(this.state.mygmailAdress);
       /* const response =  fetch("/api/fetchGmailData", {
       method: "POST",
       headers: {
@@ -143,13 +131,14 @@ class App extends Component {
           </Navbar.Brand>
 
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="home">Home</Nav.Link>
             <Nav.Link href="adAnalysis">Ad analysis</Nav.Link>
             {this.state.isAdmin ? (
               <Nav.Link href="adminSettings">Admin Settings</Nav.Link>
             ) : null}
           </Nav>
           <div className="float-right">
+
             <GoogleLogin
               clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
               buttonText={this.state.name}
@@ -159,18 +148,33 @@ class App extends Component {
               isSignedIn={true}
               cookiePolicy={"single_host_origin"}
             />
+<br/>
+  <GoogleLogout
+      clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
+      buttonText="Logout"
+      onLogoutSuccess={logout}
+    >
+    </GoogleLogout> 
           </div>
         </Navbar>
         <Router>
           <Switch>
-            <Route path="/adminSettings">              
-               {this.state.isAdmin ? <AdminPage /> : null}
+            <Route path="/Home">
+              <Home />
+            </Route>
+            <Route path="/adminSettings">
+              {this.state.isAdmin ? <AdminPage /> : null}
             </Route>
             <Route path="/adAnalysis">
-                    <AdAnalysis state={this.state} />
-            </Route>            
+              <AdAnalysis
+                mygmailAdress={this.state.mygmailAdress}
+               
+                myToken={this.state.myToken}
+              />
+            </Route>
           </Switch>
         </Router>
+
         {/*        <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
@@ -185,9 +189,6 @@ class App extends Component {
             Learn React
           </a>
         </header>*/}
-
-
-
       </div>
     );
   }
