@@ -11,9 +11,9 @@ const createIndex = async function (indexName) {
 
 var executeCreateIndex = async function (req, res) {
 	try {
-		const resp = await createIndex(constants.INDEX_ELASTIC);
-		console.log(resp);
-		 res.status(200).json(resp);
+		await createIndex(constants.INDEX_ELASTIC_LOADING);
+		await createIndex(constants.INDEX_ELASTIC);		
+		res.status(200).json("index created");
 	} catch (e) {
 		var error = JSON.parse(JSON.stringify(e));
 

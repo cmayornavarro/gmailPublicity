@@ -23,7 +23,8 @@ export default class AdminPage extends React.Component {
       spinnerAnalyse: false,
       spinnerGetPublicity: false,
       spinnerGetSpam: false,
-      getDataGraph:false
+      getDataGraph:false,
+      isLoading:false
     };
   }
   componentDidUpdate() {
@@ -32,11 +33,34 @@ export default class AdminPage extends React.Component {
     this.mygmailAdress = this.props.mygmailAdress;
  
     this.myToken = this.props.myToken;
+   this.getMyLoadingData();
   }
-  componentDidMount() {
-    console.log("componentDidMount getMyGmailData");
+  componentDidMount() {    
+  
   //  this.getMyGmailData();
   }
+
+  getMyLoadingData = async () => {
+
+    try {
+     
+      const response = await fetch(
+        "/api/getLoadingData?mygmailAdress=" + this.mygmailAdress
+      );
+
+      const body = await response.json();
+        console.log(body);
+     
+      if( this.state.isLoading != body.isLoading){
+       this.setState({ isLoading: body.isLoading});
+      }
+      
+      return body;
+    } catch (error) {
+     
+      console.log(error);
+    }
+  };
 
   getMyGmailData = async (e) => {
     if (e) e.preventDefault();
@@ -77,7 +101,7 @@ export default class AdminPage extends React.Component {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: this.myToken }),
+        body: JSON.stringify({ code: this.myToken, email: this.mygmailAdress}),
       });
       const body = await response.text();
       if (response.status !== 200) throw Error(body.message);
@@ -87,32 +111,6 @@ export default class AdminPage extends React.Component {
     }
   };
 
-  /* getMyGmailData = async (e) => {
-    if (e) e.preventDefault();
-    try {
-      const response = await fetch(
-        "/api/getMyGmailData?mygmailAdress=" + this.state.mygmailAdress
-      );
-
-      const body = await response.json();
-
-      var buckets = body.aggregations.group_by_body.buckets;
-      let newData = [];
-      let newDataPush = [];
-      buckets.forEach((bucket) =>
-        newData.push({ count: bucket.key, company: bucket.doc_count })
-      );
-
-      newDataPush.push({ title: "My adds", data: newData });
-      this.setState({ data: newDataPush });
-
-      if (response.status !== 200) throw Error(body.message);
-
-      return body;
-    } catch (error) {
-      console.log(error);
-    }
-  };*/
 
   render() {
     return (
@@ -153,8 +151,8 @@ export default class AdminPage extends React.Component {
                     </Card.Body>
                     <Card.Footer>
                       <small className="text-muted">
-                        Available
-                        {this.state.spinnerAnalyse ? (
+                        Available <br/>
+                        {this.state.spinnerAnalyse|| this.state.isLoading ? (
                           <Spinner animation="border" variant="danger" />
                         ) : null}
                       </small>
