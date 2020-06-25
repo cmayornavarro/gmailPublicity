@@ -3,13 +3,23 @@ import gmailSGV from "./svg/gmail.svg";
 import sadSGV from "./svg/sad.svg";
 import forbiddenSGV from "./svg/forbidden.svg";
 import billboardSGV from "./svg/billboard.svg";
-
+import { Modal, Button } from "react-bootstrap";
 export default class Home extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = { showPopup: false };
 	}
 
-	componentDidUpdate() {}
+	componentDidUpdate() {
+		this.pathAnalysis = "/home";
+		if (this.props.login) {
+			this.pathAnalysis = "/adAnalysis";
+		}
+	}
+
+	loginPopup = async () => {
+		console.log("loginPopup");
+	};
 
 	componentDidMount() {}
 
@@ -27,12 +37,13 @@ export default class Home extends React.Component {
 						<h1 className="display-3">Hello, User!</h1>
 						<p>
 							This is an app for analysing your e-mails. It tells
-							you which companies send you a lot of adds.
+							you which companies send you a lot of ads.
 						</p>
+						
 						<p>
 							<a
 								className="btn btn-primary btn-lg"
-								href="/adAnalysis"
+								href={this.pathAnalysis}
 								role="button"
 							>
 								Learn more &raquo;

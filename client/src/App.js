@@ -72,7 +72,8 @@ class App extends Component {
       mygmailAdress: "",
       myToken: "",
       isAdmin: false,
-      name: "",
+      name: "Login",
+      login:false
     };
   }
 
@@ -92,16 +93,17 @@ class App extends Component {
 
   render() {
     const logout = (a) => {
-      console.log(a);
+           this.setState({login:false,name:"login" });
     };
     const responseGoogle = async (responseToken) => {
-      console.log("a");
+     
+      this.setState({ 
+      mygmailAdress: responseToken.profileObj.email,
+      myToken: responseToken.tokenObj,
+      name: responseToken.profileObj.givenName,
+      login:true
+       });   
 
-      console.log(responseToken.profileObj); //set here in state
-      this.setState({ mygmailAdress: responseToken.profileObj.email });
-      console.log(this.state.mygmailAdress);
-      this.setState({ myToken: responseToken.tokenObj });
-      this.setState({ name: responseToken.profileObj.givenName });
       if (responseToken.profileObj.email == "cmayor.navarro@gmail.com") {
         this.setState({ isAdmin: true });
       } else {
@@ -139,7 +141,7 @@ class App extends Component {
           </Nav>
           <div className="float-right">
 
-            <GoogleLogin
+      {!this.state.login ?(      <GoogleLogin
               clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
               buttonText={this.state.name}
               scope="https://www.googleapis.com/auth/gmail.readonly"
@@ -147,20 +149,20 @@ class App extends Component {
               onFailure={responseGoogle}
               isSignedIn={true}
               cookiePolicy={"single_host_origin"}
-            />
-<br/>
-  <GoogleLogout
+            />):null}
+
+   {this.state.login ?(<GoogleLogout
       clientId="843739110142-765u6gbtq5ip1borpgfkkmvivc3vd3cn.apps.googleusercontent.com"
-      buttonText="Logout"
+      buttonText={this.state.name+" - Logout"}
       onLogoutSuccess={logout}
     >
-    </GoogleLogout> 
+    </GoogleLogout> ):null}
           </div>
         </Navbar>
         <Router>
           <Switch>
             <Route path="/Home">
-              <Home />
+              <Home login={this.state.login}/>
             </Route>
             <Route path="/adminSettings">
               {this.state.isAdmin ? <AdminPage /> : null}

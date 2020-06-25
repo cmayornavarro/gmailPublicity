@@ -11,7 +11,7 @@ const addmappingToIndex = async function (indexName, mapping) {
 };
 
 var executeAddMapping = async function (req, res) {
-    const mapping = {
+    const mappingElastic = {
         properties: {
             title: {
                 type: "text",
@@ -43,9 +43,30 @@ var executeAddMapping = async function (req, res) {
             },
         },
     };
+   const mappingLoading = {
+        properties: {
+
+            emailAddress: {
+                type: "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": { 
+                    "type": "keyword"
+                  }
+                }
+            },            
+
+            timestamp: {
+                type: "date",
+                format: "epoch_millis",
+            },
+        },
+    };    
     try {
-        const resp = await addmappingToIndex(constants.INDEX_ELASTIC, mapping);
+        let resp = await addmappingToIndex(constants.INDEX_ELASTIC, mappingElastic);        
         console.log(resp);
+         resp = await addmappingToIndex(constants.INDEX_ELASTIC_LOADING, mappingLoading);        
+        console.log(resp);        
         res.status(200).json({message: "Mapping added"});
     } catch (e) {
         console.log(e);

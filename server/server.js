@@ -12,7 +12,10 @@ var executeInsert = require("./elasticOperations/insertData.js");
 var executeSearch = require("./elasticOperations/searchData.js");
 var executeGmailData = require("./executeGmailData.js");
 var executeGetMyGmailData = require("./executeGetMyGmailData.js");
+var executeGetLoadingData = require("./executeGetLoadingData.js");
 var executeGetGmailValidation = require("./executeGetGmailValidation.js");
+var executeDeleteLoadingData = require("./elasticOperations/deleteLoadingData.js");
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,5 +35,9 @@ app.route("/api/insertData").post(executeInsert);
 app.route("/api/fetchGmailData").post(executeGmailData);
 app.route("/api/getGmailValidation").get(executeGetGmailValidation);
 app.route("/api/getMyGmailData").get(executeGetMyGmailData);
+app.route("/api/getLoadingData").get(executeGetLoadingData);
 
+ 
+executeDeleteLoadingData();
+ 
 app.listen(port, () => console.log(`Listening on port ${port}`));

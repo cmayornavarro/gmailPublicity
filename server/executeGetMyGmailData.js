@@ -11,7 +11,7 @@ const searchData = async function (indexName, query) {
 
 const getMyGmailData = async function (req, res) {
 
-	var emailAddress="cmayor.navarro@gmail.com"
+	
 	const query = {
 		query: {
 			bool: {

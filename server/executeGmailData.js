@@ -1,5 +1,6 @@
 var constants = require("./elasticOperations/constants.js");
 const esClient = require("./elasticOperations/client");
+var executeDeleteLoadingData = require("./elasticOperations/deleteLoadingData.js");
 
 const fs = require("fs");
 const readline = require("readline");
@@ -214,9 +215,12 @@ var executeGmailData = async function (req, res) {
 			"Em3XxMJSzBRv0mWg8tBl8vIq",
 			"http://localhost:3000/oauth2callback"
 		);
-
+		let emailUser = "";
 		try {
-			
+			 emailUser = req.body.email;
+			const data = { emailAddress: emailUser };
+			await insertData(constants.INDEX_ELASTIC_LOADING,data);
+
 			var newToken = JSON.parse(JSON.stringify(req.body.code));
 			console.log("newToken");
 			console.log(newToken);
@@ -227,9 +231,12 @@ var executeGmailData = async function (req, res) {
 
 			//oauth2Client.setCredentials(tokens);
 			getIdEmails(oauth2Client);
+			res.send("analyzing data");
 		} catch (e) {
 			console.log(e);
 
+		}finally{
+			await executeDeleteLoadingData(emailUser);
 		}
 	} else {
 		// Load client secrets from a local file.
