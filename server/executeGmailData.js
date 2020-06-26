@@ -187,7 +187,7 @@ function getEmailFrom(auth, id, emailAddress) {
 								constants.INDEX_ELASTIC,
 								data
 							);
-							console.log(data);
+							
 						} catch (e) {
 							console.log(e);
 						}
