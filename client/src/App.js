@@ -157,6 +157,7 @@ class App extends Component {
         </Navbar>
         <Router>
           <Switch>
+         
             <Route path="/Home">
               <Home login={this.state.login}/>
             </Route>
@@ -170,6 +171,9 @@ class App extends Component {
                 myToken={this.state.myToken}
               />
             </Route>
+            <Route path="/">
+              <Home login={this.state.login}/>
+            </Route>             
           </Switch>
         </Router>
       </div>
