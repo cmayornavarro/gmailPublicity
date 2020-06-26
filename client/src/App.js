@@ -92,7 +92,7 @@ class App extends Component {
     };
     const responseGoogle = async (responseToken) => {
       if(!responseToken.profileObj)
-        return;
+        return; 
       this.setState({ 
       mygmailAdress: responseToken.profileObj.email,
       myToken: responseToken.tokenObj,
