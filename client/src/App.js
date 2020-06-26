@@ -91,7 +91,8 @@ class App extends Component {
            this.setState({login:false,name:"login",isAdmin:false });
     };
     const responseGoogle = async (responseToken) => {
-     
+      if(!responseToken.profileObj)
+        return;
       this.setState({ 
       mygmailAdress: responseToken.profileObj.email,
       myToken: responseToken.tokenObj,
