@@ -7,7 +7,7 @@ import { Modal, Button } from "react-bootstrap";
 export default class Home extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { showPopup: false };
+		
 	}
 
 	componentDidUpdate() {
@@ -18,8 +18,16 @@ export default class Home extends React.Component {
 	}
 
 	loginPopup = async () => {
-		console.log("loginPopup");
+		console.log("You have to log in ! Don't be a pussy");
 	};
+
+	alertPopUp = async () => {
+	
+		if (!this.pathAnalysis || this.pathAnalysis == "/home") {
+			alert("You have to log in ! Don't be a pussy");
+
+		}
+	}
 
 	componentDidMount() {}
 
@@ -44,10 +52,12 @@ export default class Home extends React.Component {
 							<a
 								className="btn btn-primary btn-lg"
 								href={this.pathAnalysis}
+								onClick={this.alertPopUp}
 								role="button"
 							>
 								Learn more &raquo;
 							</a>
+
 						</p>
 					</div>
 				</div>

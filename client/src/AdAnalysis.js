@@ -105,7 +105,7 @@ export default class AdminPage extends React.Component {
       });
       const body = await response.text();
       if (response.status !== 200) throw Error(body.message);
-      this.setState({ responseToPost: body, spinnerAnalyse: false });
+      //this.setState({ responseToPost: body, spinnerAnalyse: false });
     } catch (error) {
       this.setState({ spinnerAnalyse: false });
     }

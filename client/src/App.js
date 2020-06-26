@@ -72,18 +72,13 @@ class App extends Component {
       mygmailAdress: "",
       myToken: "",
       isAdmin: false,
-      name: "Login",
+      name: "Log in",
       login:false
     };
   }
 
   componentDidMount() {
-    console.log("mount");
-    //this.setState({ response: "test"});
-    //this.setState({ post: "test2"});
-    /* this.callApi()
-      .then((res) => this.setState({ response: res.express }))
-      .catch((err) => console.log(err));*/
+   
   }
 
   logOK = async (e) => {
@@ -93,7 +88,7 @@ class App extends Component {
 
   render() {
     const logout = (a) => {
-           this.setState({login:false,name:"login" });
+           this.setState({login:false,name:"login",isAdmin:false });
     };
     const responseGoogle = async (responseToken) => {
      
@@ -134,7 +129,7 @@ class App extends Component {
 
           <Nav className="mr-auto">
             <Nav.Link href="home">Home</Nav.Link>
-            <Nav.Link href="adAnalysis">Ad analysis</Nav.Link>
+           { this.state.login ? (<Nav.Link href="adAnalysis">Ad analysis</Nav.Link>):null }
             {this.state.isAdmin ? (
               <Nav.Link href="adminSettings">Admin Settings</Nav.Link>
             ) : null}
@@ -176,21 +171,6 @@ class App extends Component {
             </Route>
           </Switch>
         </Router>
-
-        {/*        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>*/}
       </div>
     );
   }
