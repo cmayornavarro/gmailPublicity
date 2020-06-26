@@ -2,7 +2,7 @@
   "name": "example-create-react-app-express",
   "version": "1.0.0",
   "scripts": {
-    "clientStart": "cd client && npm start",
+    "clientStart": "cd client && set HTTPS=true&&npm start",
     "serverStart": "cd server && nodemon --experimental-modules server.js",
     "start": "concurrently --kill-others-on-fail \"npm run serverStart\" \"npm run clientStart\""
   },
