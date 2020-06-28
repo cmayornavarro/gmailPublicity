@@ -18,7 +18,7 @@ const deleteAData = async function (indexName,email) {
 		index: indexName,
 		body: {
            query: {
-              "match" : {emailAddress:email} // for deleting all documents
+              "match" : {"emailAddress.keyword":email} // for deleting all documents
            } 
         }		
 	});

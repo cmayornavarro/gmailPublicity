@@ -232,7 +232,7 @@ var executeGmailData = async function (req, res) {
 			oauth2Client.setCredentials(newToken);
 
 			//oauth2Client.setCredentials(tokens);
-			getIdEmails(oauth2Client);
+			await getIdEmails(oauth2Client);
 			res.send("analyzing data");
 		} catch (e) {
 			console.log(e);
