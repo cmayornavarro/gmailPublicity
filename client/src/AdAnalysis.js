@@ -23,41 +23,39 @@ export default class AdminPage extends React.Component {
       spinnerAnalyse: false,
       spinnerGetPublicity: false,
       spinnerGetSpam: false,
-      getDataGraph:false,
-      isLoading:false
+      getDataGraph: false,
+      isLoading: false,
+      analyseMessage:"Available"
+
     };
   }
   componentDidUpdate() {
     console.log("componentDidUpdate");
 
     this.mygmailAdress = this.props.mygmailAdress;
- 
+
     this.myToken = this.props.myToken;
-   this.getMyLoadingData();
+    this.getMyLoadingData();
   }
-  componentDidMount() {    
-  
-  //  this.getMyGmailData();
+  componentDidMount() {
+    //  this.getMyGmailData();
   }
 
   getMyLoadingData = async () => {
-
     try {
-     
       const response = await fetch(
         "/api/getLoadingData?mygmailAdress=" + this.mygmailAdress
       );
 
       const body = await response.json();
-        console.log(body);
-     
-      if( this.state.isLoading != body.isLoading){
-       this.setState({ isLoading: body.isLoading});
+      console.log(body);
+
+      if (this.state.isLoading != body.isLoading) {
+        this.setState({ isLoading: body.isLoading, analyseMessage:"We are still analysing your data, you can come back later or click on \"Get my data\" "});
       }
-      
+
       return body;
     } catch (error) {
-     
       console.log(error);
     }
   };
@@ -80,14 +78,14 @@ export default class AdminPage extends React.Component {
       );
 
       newDataPush.push({ title: "My adds", data: newData });
-        this.data = newDataPush;
+      this.data = newDataPush;
       this.setState({ data: newDataPush });
 
       if (response.status !== 200) throw Error(body.message);
-      this.setState({ spinnerGetPublicity: false,getDataGraph:true });
+      this.setState({ spinnerGetPublicity: false, getDataGraph: true });
       return body;
     } catch (error) {
-      this.setState({ spinnerGetPublicity:false, getDataGraph:false });
+      this.setState({ spinnerGetPublicity: false, getDataGraph: false });
       console.log(error);
     }
   };
@@ -95,22 +93,21 @@ export default class AdminPage extends React.Component {
   gmailDataFetch = async (e) => {
     e.preventDefault();
     try {
-        this.setState({ spinnerAnalyse: true });
+      this.setState({ spinnerAnalyse: true,analyseMessage:"We are still analysing your data, you can come back later or click on \"Get my data\" " });
       const response = await fetch("/api/fetchGmailData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code: this.myToken, email: this.mygmailAdress}),
+        body: JSON.stringify({ code: this.myToken, email: this.mygmailAdress }),
       });
       const body = await response.text();
-      if (response.status !== 200) throw Error(body.message);
-      //this.setState({ responseToPost: body, spinnerAnalyse: false });
+
+      
     } catch (error) {
       this.setState({ spinnerAnalyse: false });
     }
   };
-
 
   render() {
     return (
@@ -151,8 +148,9 @@ export default class AdminPage extends React.Component {
                     </Card.Body>
                     <Card.Footer>
                       <small className="text-muted">
-                        Available <br/>
-                        {this.state.spinnerAnalyse|| this.state.isLoading ? (
+                        {this.state.analyseMessage}
+                         <br />
+                        {this.state.spinnerAnalyse || this.state.isLoading ? (
                           <Spinner animation="border" variant="danger" />
                         ) : null}
                       </small>
@@ -175,7 +173,7 @@ export default class AdminPage extends React.Component {
                         onClick={this.getMyGmailData}
                         className="btn btn-success"
                       >
-                        Get
+                        Get my data
                       </button>
                     </Card.Body>
                     <Card.Footer>
@@ -225,13 +223,13 @@ export default class AdminPage extends React.Component {
         />*/}
 
         <div>
-      
-            {this.state.getDataGraph ? (
-          <LineChart
-            data={this.state.data[0].data}
-            title={this.state.data[0].title}
-            color="#3E517A"
-          />):null}
+          {this.state.getDataGraph ? (
+            <LineChart
+              data={this.state.data[0].data}
+              title={this.state.data[0].title}
+              color="#3E517A"
+            />
+          ) : null}
         </div>
       </div>
     );

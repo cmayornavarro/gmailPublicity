@@ -171,7 +171,7 @@ function getEmailFrom(auth, id, emailAddress) {
 		(err, res) => {
 			if (err) return console.log("The API returned an error: " + err);
 			const headers = res.data.payload.headers;
-
+			
 			if (headers.length) {
 				headers.forEach((header) => {
 					if (header.name == "From") {
@@ -185,10 +185,11 @@ function getEmailFrom(auth, id, emailAddress) {
 						try {
 							const resp = insertData(
 								constants.INDEX_ELASTIC,
-								data
+								data,
+								res.data.id
 							);
 							
-						} catch (e) {
+						} catch (e) { 
 							console.log(e);
 						}
 					}
@@ -200,10 +201,11 @@ function getEmailFrom(auth, id, emailAddress) {
 	);
 }
 
-const insertData = async function (indexName, data) {
+const insertData = async function (indexName, data,id) {
+	console.log(id);
 	return await esClient.index({
 		index: indexName,
-		//_id is needed for modify data
+		id:id,// is needed for modify data
 		body: data,
 	});
 };
@@ -236,6 +238,7 @@ var executeGmailData = async function (req, res) {
 			console.log(e);
 
 		}finally{
+			console.log("emailUser "+emailUser  );
 			await executeDeleteLoadingData(emailUser);
 		}
 	} else {

@@ -13,6 +13,7 @@ const deleteAllData = async function (indexName) {
 };
 
 const deleteAData = async function (indexName,email) {
+	console.log("deleteAData");
 	return await esClient.deleteByQuery({
 		index: indexName,
 		body: {
@@ -27,17 +28,17 @@ var executeDeleteLoadingData = async function (email) {
 	try {
 		
 		let resp;
-		if(email){
-			
+		if(email){			
 			resp = await deleteAData(constants.INDEX_ELASTIC_LOADING,email);
 		}else{
 		
 			resp = await deleteAllData(constants.INDEX_ELASTIC_LOADING);		
 		}
-		console.log(resp);
+		console.log("executeDeleteLoadingData: " + JSON.stringify(resp));
+		//console.log(JSON.parse(JSON.stringify(resp)).json());
 	} catch (e) {
-		var error = JSON.parse(JSON.stringify(e));
-		console.log(error); //it has the error json 		
+		
+		console.log("executeDeleteLoadingData error" + e); //it has the error json 		
 	}
 };
 

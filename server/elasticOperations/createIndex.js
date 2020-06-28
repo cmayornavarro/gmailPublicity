@@ -11,13 +11,13 @@ const createIndex = async function (indexName) {
 
 var executeCreateIndex = async function (req, res) {
 	try {
-		await createIndex(constants.INDEX_ELASTIC_LOADING);
 		await createIndex(constants.INDEX_ELASTIC);		
+		await createIndex(constants.INDEX_ELASTIC_LOADING);		
 		res.status(200).json("index created");
 	} catch (e) {
 		var error = JSON.parse(JSON.stringify(e));
 
-		//console.log(error); //it has the error json 
+		console.log(error); //it has the error json 
 		 res.status(501).json({errorMessage: "Error while creating the index, please contact the administrator"});
 	}
 };
