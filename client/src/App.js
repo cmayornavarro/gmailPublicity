@@ -44,6 +44,7 @@ class App extends Component {
       login: true,
       isAdmin: isAdminBoolean,
     });
+    console.log("login"+this.state.login);
   };
 
   componentDidMount() {}
@@ -79,7 +80,7 @@ class App extends Component {
                 scope="https://www.googleapis.com/auth/gmail.readonly"
                 onSuccess={this.loginSuccess}
                 onFailure={this.loginSuccess}
-               
+
                 isSignedIn={true}
                 cookiePolicy={"single_host_origin"}
               />

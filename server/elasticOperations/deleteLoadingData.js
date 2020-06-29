@@ -13,7 +13,7 @@ const deleteAllData = async function (indexName) {
 };
 
 const deleteAData = async function (indexName,email) {
-	console.log("deleteAData");
+	console.log("deleteAData " + email);
 	return await esClient.deleteByQuery({
 		index: indexName,
 		body: {
@@ -26,7 +26,7 @@ const deleteAData = async function (indexName,email) {
 
 var executeDeleteLoadingData = async function (email) {
 	try {
-		
+			console.log("executeDeleteLoadingData1"+ email);
 		let resp;
 		if(email){			
 			resp = await deleteAData(constants.INDEX_ELASTIC_LOADING,email);

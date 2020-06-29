@@ -7,27 +7,28 @@ import { Modal, Button } from "react-bootstrap";
 export default class Home extends React.Component {
 	constructor(props) {
 		super(props);
-		
+		this.state = {
+			pathAnalysis: "/home",
+		};
 	}
 
 	componentDidUpdate() {
-		this.pathAnalysis = "/home";
+		
 		if (this.props.login) {
-			this.pathAnalysis = "/adAnalysis";
+			if (this.state.pathAnalysis == "/home") {
+				this.setState({ pathAnalysis: "/adAnalysis" });
+			}
+		} else {
+			this.setState({ pathAnalysis: "/home" });
 		}
 	}
-
-	loginPopup = async () => {
-		console.log("You have to log in ! Don't be a pussy");
-	};
 
 	alertPopUp = async () => {
 	
-		if (!this.pathAnalysis || this.pathAnalysis == "/home") {
+		if (this.state.pathAnalysis == "/home") {
 			alert("You have to log in ! Don't be a pussy");
-
 		}
-	}
+	};
 
 	componentDidMount() {}
 
@@ -47,17 +48,16 @@ export default class Home extends React.Component {
 							This is an app for analysing your e-mails. It tells
 							you which companies send you a lot of ads.
 						</p>
-						
+
 						<p>
 							<a
 								className="btn btn-primary btn-lg"
-								href={this.pathAnalysis}
+								href={this.state.pathAnalysis}
 								onClick={this.alertPopUp}
 								role="button"
 							>
 								Learn more &raquo;
 							</a>
-
 						</p>
 					</div>
 				</div>

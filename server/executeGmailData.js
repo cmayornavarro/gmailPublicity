@@ -1,7 +1,7 @@
 var constants = require("./elasticOperations/constants.js");
 const esClient = require("./elasticOperations/client");
 var executeDeleteLoadingData = require("./elasticOperations/deleteLoadingData.js");
-
+var Q = require("q");
 const fs = require("fs");
 const readline = require("readline");
 const { google } = require("googleapis");
@@ -92,32 +92,10 @@ function listLabels(auth) {
 	);
 }
 
-function getIdEmails2(auth) {
-	const gmail = google.gmail({ version: "v1", auth });
-	gmail.users.messages
-		.list({
-			userId: "me",
-			labelIds: "CATEGORY_PROMOTIONS",
-		})
-		.then(function (res) {
-			const messages = res.data.messages;
-			if (messages.length) {
-				console.log("messages:");
-				messages.forEach((message) => {
-					console.log(`- ${message.id}`);
-				});
-			} else {
-				console.log("No labels found.");
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-}
-
 function getIdEmails(auth, nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
 	var emailAddress = "";
+	var deferred = Q.defer();
 
 	gmail.users.getProfile(
 		{
@@ -146,19 +124,20 @@ function getIdEmails(auth, nextPage) {
 				messages.forEach((message) => {
 					getEmailFrom(auth, message.id, emailAddress);
 				});
-				if (res.data.nextPageToken) {
+			/*	if (res.data.nextPageToken) {
 					try {
 						console.log("nextPageToken: " + res.data.nextPageToken);
 						getIdEmails(auth, res.data.nextPageToken);
 					} catch (e) {
 						console.log(e);
 					}
-				}
+				}*/
 			} else {
 				console.log("No labels found.");
 			}
 		}
 	);
+	   return deferred.promise;
 }
 
 function getEmailFrom(auth, id, emailAddress) {
@@ -230,17 +209,23 @@ var executeGmailData = async function (req, res) {
 
 			//var newToken = JSON.stringify(req.body.code);
 			oauth2Client.setCredentials(newToken);
-
-			//oauth2Client.setCredentials(tokens);
-			await getIdEmails(oauth2Client);
 			res.send("analyzing data");
+			//oauth2Client.setCredentials(tokens);
+			getIdEmails(oauth2Client).then(function(){
+				console.log("executeDeleteLoadingData");
+				 executeDeleteLoadingData(emailUser);
+			}).catch(function(err) {
+			console.log("err "+err);
+			});
+;
+			
 		} catch (e) {
 			console.log(e);
 
-		}finally{
+		}/*finally{
 			console.log("emailUser "+emailUser  );
-			await executeDeleteLoadingData(emailUser);
-		}
+			
+		}*/
 	} else {
 		// Load client secrets from a local file.
 		fs.readFile("credentials.json", (err, content) => {
