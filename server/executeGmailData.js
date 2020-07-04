@@ -92,11 +92,8 @@ function listLabels(auth) {
 	);
 }
 
-function getIdEmails(auth, nextPage) {
-	const gmail = google.gmail({ version: "v1", auth });
-	var emailAddress = "";
+function test(gmail,auth){
 	var deferred = Q.defer();
-
 	gmail.users.getProfile(
 		{
 			auth: auth,
@@ -108,8 +105,18 @@ function getIdEmails(auth, nextPage) {
 			} else {
 				emailAddress = res.data.emailAddress;
 			}
+			deferred.resolve(emailAddress);
+			
 		}
-	);
+	)
+	return deferred.promise;
+}
+
+
+
+function test2(gmail,auth,emailAddress,nextPage){
+	var deferred = Q.defer();
+	 var arrayOfPromise = [];
 	gmail.users.messages.list(
 		{
 			userId: "me",
@@ -122,8 +129,11 @@ function getIdEmails(auth, nextPage) {
 			if (messages.length) {
 				var arrayOfPromises = [];
 				messages.forEach((message) => {
-					getEmailFrom(auth, message.id, emailAddress);
+					arrayOfPromise.push(getEmailFrom(auth, message.id, emailAddress));
 				});
+				console.log("abels found.");
+				return Q.all(arrayOfPromise);
+				
 			/*	if (res.data.nextPageToken) {
 					try {
 						console.log("nextPageToken: " + res.data.nextPageToken);
@@ -137,10 +147,34 @@ function getIdEmails(auth, nextPage) {
 			}
 		}
 	);
-	   return deferred.promise;
+	
+}
+
+
+function getIdEmails(auth, nextPage) {
+	const gmail = google.gmail({ version: "v1", auth });
+	var emailAddress = "";
+	var deferred = Q.defer();
+	
+	test(gmail,auth).then(function(emailAddress){
+		console.log("callback");
+		return test2(gmail,auth,emailAddress,nextPage);
+	}).then(function(a){
+			console.log("callback 2");
+			deferred.resolve();
+		}).catch(function(error) {
+            console.log("error "+ error);
+        });
+
+	console.log("deferred.promise");
+	return deferred.promise;
+	  
 }
 
 function getEmailFrom(auth, id, emailAddress) {
+
+	var deferred = Q.defer();
+	var arrayOfPromise = [];
 	const gmail = google.gmail({ version: "v1", auth });
 	gmail.users.messages.get(
 		{
@@ -153,6 +187,7 @@ function getEmailFrom(auth, id, emailAddress) {
 			
 			if (headers.length) {
 				headers.forEach((header) => {
+					arrayOfPromise.push(function(){
 					if (header.name == "From") {
 						console.log(header.value);
 						const data = {
@@ -167,17 +202,22 @@ function getEmailFrom(auth, id, emailAddress) {
 								data,
 								res.data.id
 							);
-							
+							deferred.resolve()
 						} catch (e) { 
 							console.log(e);
 						}
 					}
+					return deferred.promise;
 				});
+				});
+				return Q.all(arrayOfPromise);
 			} else {
 				console.log("No labels found.");
 			}
 		}
 	);
+
+	
 }
 
 const insertData = async function (indexName, data,id) {
@@ -211,10 +251,11 @@ var executeGmailData = async function (req, res) {
 			oauth2Client.setCredentials(newToken);
 			res.send("analyzing data");
 			//oauth2Client.setCredentials(tokens);
-			getIdEmails(oauth2Client).then(function(){
-				console.log("executeDeleteLoadingData");
+			getIdEmails(oauth2Client).then(function(a){
+				console.log("executeDeleteLoadingData 2 "+a);
 				 executeDeleteLoadingData(emailUser);
 			}).catch(function(err) {
+				console.log("executeDeleteLoadingData ERROR");
 			console.log("err "+err);
 			});
 ;
