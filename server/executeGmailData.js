@@ -147,11 +147,14 @@ function test(gmail,auth){
 					} catch (e) {
 						console.log(e);
 					}
+				}else{
+					 executeDeleteLoadingData(emailAddress);
 				}
 					deferred.resolve("test2 ");
+				
 			} else { 
 				console.log("No labels found.");
-				 executeDeleteLoadingData(emailAddress);
+				
 			}
 		}
 	);
