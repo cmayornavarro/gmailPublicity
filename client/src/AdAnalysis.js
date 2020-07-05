@@ -10,8 +10,7 @@ import emailSVG from "./svg/email.svg";
 export default class AdminPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log("mygmailAdress");
-    console.log(this.props);
+
     this.state = {
       data: [],
       mygmailAdress: props.mygmailAdress,
@@ -25,21 +24,16 @@ export default class AdminPage extends React.Component {
       spinnerGetSpam: false,
       getDataGraph: false,
       isLoading: false,
-      analyseMessage:"Available"
-
+      analyseMessage: "Available",
     };
   }
   componentDidUpdate() {
-    console.log("componentDidUpdate");
-
     this.mygmailAdress = this.props.mygmailAdress;
-
     this.myToken = this.props.myToken;
     this.getMyLoadingData();
   }
-  componentDidMount() {
-    //  this.getMyGmailData();
-  }
+
+  componentDidMount() {}
 
   getMyLoadingData = async () => {
     try {
@@ -48,10 +42,13 @@ export default class AdminPage extends React.Component {
       );
 
       const body = await response.json();
-      console.log(body);
 
       if (this.state.isLoading != body.isLoading) {
-        this.setState({ isLoading: body.isLoading, analyseMessage:"We are still analysing your data, you can come back later or click on \"Get my data\" "});
+        this.setState({
+          isLoading: body.isLoading,
+          analyseMessage:
+            'We are still analysing your data, you can come back later or click on "Get my data" ',
+        });
       }
 
       return body;
@@ -78,12 +75,13 @@ export default class AdminPage extends React.Component {
       );
 
       newDataPush.push({ title: "My adds", data: newData });
-      this.data = newDataPush;
-      this.setState({ data: newDataPush });
 
       if (response.status !== 200) throw Error(body.message);
-      this.setState({ spinnerGetPublicity: false, getDataGraph: true });
-      return body;
+      this.setState({
+        data: newDataPush,
+        spinnerGetPublicity: false,
+        getDataGraph: true,
+      });
     } catch (error) {
       this.setState({ spinnerGetPublicity: false, getDataGraph: false });
       console.log(error);
@@ -93,7 +91,11 @@ export default class AdminPage extends React.Component {
   gmailDataFetch = async (e) => {
     e.preventDefault();
     try {
-      this.setState({ spinnerAnalyse: true,analyseMessage:"We are still analysing your data, you can come back later or click on \"Get my data\" " });
+      this.setState({
+        spinnerAnalyse: true,
+        analyseMessage:
+          'We are still analysing your data, you can come back later or click on "Get my data" ',
+      });
       const response = await fetch("/api/fetchGmailData", {
         method: "POST",
         headers: {
@@ -102,8 +104,6 @@ export default class AdminPage extends React.Component {
         body: JSON.stringify({ code: this.myToken, email: this.mygmailAdress }),
       });
       const body = await response.text();
-
-      
     } catch (error) {
       this.setState({ spinnerAnalyse: false });
     }
@@ -149,7 +149,7 @@ export default class AdminPage extends React.Component {
                     <Card.Footer>
                       <small className="text-muted">
                         {this.state.analyseMessage}
-                         <br />
+                        <br />
                         {this.state.spinnerAnalyse || this.state.isLoading ? (
                           <Spinner animation="border" variant="danger" />
                         ) : null}
