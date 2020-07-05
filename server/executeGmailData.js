@@ -114,7 +114,7 @@ function test(gmail,auth){
 
 
 
-function test2(gmail,auth,emailAddress,nextPage){
+ function test2(gmail,auth,emailAddress,nextPage){
 	var deferred = Q.defer();
 	 var arrayOfPromise = [];
 	gmail.users.messages.list(
@@ -128,39 +128,47 @@ function test2(gmail,auth,emailAddress,nextPage){
 			const messages = res.data.messages;
 			if (messages.length) {
 				var arrayOfPromises = [];
-				messages.forEach((message) => {
-					arrayOfPromise.push(getEmailFrom(auth, message.id, emailAddress));
+				console.log("before ");
+				/*messages.forEach( (message) => {
+				  getEmailFrom(auth, message.id, emailAddress);
+				});*/
+				let promise = messages.map(function(message){
+					getEmailFrom(auth, message.id, emailAddress);
+					return message;
 				});
-				console.log("abels found.");
-				return Q.all(arrayOfPromise);
+				Promise.all(promise).then(function(){console.log("yes");}).catch(function(err){console.log("err "+ err);}); 
+				console.log("labels found.");
+				//return Q.all(arrayOfPromise);
 				
-			/*	if (res.data.nextPageToken) {
+				if (res.data.nextPageToken) {
 					try {
 						console.log("nextPageToken: " + res.data.nextPageToken);
 						getIdEmails(auth, res.data.nextPageToken);
 					} catch (e) {
 						console.log(e);
 					}
-				}*/
-			} else {
+				}
+					deferred.resolve("test2 ");
+			} else { 
 				console.log("No labels found.");
+				 executeDeleteLoadingData(emailAddress);
 			}
 		}
 	);
-	
+		return deferred.promise;
 }
 
 
-function getIdEmails(auth, nextPage) {
+ function getIdEmails(auth, nextPage) {
 	const gmail = google.gmail({ version: "v1", auth });
 	var emailAddress = "";
 	var deferred = Q.defer();
 	
-	test(gmail,auth).then(function(emailAddress){
-		console.log("callback");
-		return test2(gmail,auth,emailAddress,nextPage);
+	test(gmail,auth).then(  function(emailAddress){
+		console.log("callback " + emailAddress);
+		return  test2(gmail,auth,emailAddress,nextPage);
 	}).then(function(a){
-			console.log("callback 2");
+			console.log("callback 2 a:"+a ); 
 			deferred.resolve();
 		}).catch(function(error) {
             console.log("error "+ error);
@@ -171,12 +179,12 @@ function getIdEmails(auth, nextPage) {
 	  
 }
 
-function getEmailFrom(auth, id, emailAddress) {
-
-	var deferred = Q.defer();
+async function getEmailFrom(auth, id, emailAddress) {
+	console.log("init");
+	var deferred2 = Q.defer();
 	var arrayOfPromise = [];
 	const gmail = google.gmail({ version: "v1", auth });
-	gmail.users.messages.get(
+	await gmail.users.messages.get(
 		{
 			userId: "me",
 			id: id,
@@ -184,11 +192,12 @@ function getEmailFrom(auth, id, emailAddress) {
 		(err, res) => {
 			if (err) return console.log("The API returned an error: " + err);
 			const headers = res.data.payload.headers;
-			
+		
 			if (headers.length) {
-				headers.forEach((header) => {
-					arrayOfPromise.push(function(){
+				headers.forEach(async (header) => {
+				
 					if (header.name == "From") {
+						
 						console.log(header.value);
 						const data = {
 							title: "Gmail Pub",
@@ -197,27 +206,29 @@ function getEmailFrom(auth, id, emailAddress) {
 							emailAddress: emailAddress,
 						};
 						try {
-							const resp = insertData(
+							const resp = await insertData(
 								constants.INDEX_ELASTIC,
 								data,
-								res.data.id
+								res.data.id 
 							);
-							deferred.resolve()
+							
 						} catch (e) { 
 							console.log(e);
 						}
 					}
-					return deferred.promise;
+
+					
 				});
-				});
-				return Q.all(arrayOfPromise);
-			} else {
+
+				}
+				
+			else {
 				console.log("No labels found.");
 			}
 		}
 	);
 
-	
+	console.log("final ");
 }
 
 const insertData = async function (indexName, data,id) {
@@ -253,7 +264,7 @@ var executeGmailData = async function (req, res) {
 			//oauth2Client.setCredentials(tokens);
 			getIdEmails(oauth2Client).then(function(a){
 				console.log("executeDeleteLoadingData 2 "+a);
-				 executeDeleteLoadingData(emailUser);
+				// executeDeleteLoadingData(emailUser);
 			}).catch(function(err) {
 				console.log("executeDeleteLoadingData ERROR");
 			console.log("err "+err);
