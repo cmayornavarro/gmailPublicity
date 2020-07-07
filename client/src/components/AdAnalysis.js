@@ -88,7 +88,7 @@ export default class AdminPage extends React.Component {
     }
   };
 
-  gmailDataFetch = async (e) => {
+  analyseGmailData = async (e) => {
     e.preventDefault();
     try {
       this.setState({
@@ -96,7 +96,7 @@ export default class AdminPage extends React.Component {
         analyseMessage:
           'We are still analysing your data, you can come back later or click on "Get my data" ',
       });
-      const response = await fetch("/api/fetchGmailData", {
+      const response = await fetch("/api/analyseGmailData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default class AdminPage extends React.Component {
                         analyses the senders
                       </Card.Text>
                       <button
-                        onClick={this.gmailDataFetch}
+                        onClick={this.analyseGmailData}
                         className="btn btn-primary"
                       >
                         Analyse

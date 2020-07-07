@@ -1,6 +1,7 @@
-var constants = require("./elasticOperations/constants.js");
-const esClient = require("./elasticOperations/client");
-var executeDeleteLoadingData = require("./elasticOperations/deleteLoadingData.js");
+var constants = require("./../elasticOperations/constants.js");
+const esClient = require("./../elasticOperations/client");
+var executeDeleteLoadingData = require("./../elasticOperations/deleteLoadingData.js");
+
 var Q = require("q");
 const fs = require("fs");
 const readline = require("readline");

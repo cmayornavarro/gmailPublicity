@@ -1,6 +1,6 @@
-var constants = require("./elasticOperations/constants.js");
+var constants = require("./../elasticOperations/constants.js");
+const esClient = require("./../elasticOperations/client");
 
-const esClient = require("./elasticOperations/client");
 const searchData = async function (indexName, query) {	
 	return await esClient.search({
 		index: indexName,

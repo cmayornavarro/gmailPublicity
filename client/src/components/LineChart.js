@@ -15,10 +15,7 @@ export default  class LineChart extends React.Component {
     this.myChart.update();
   }
 
-  componentDidMount() {
-  
-    console.log("LineChart");
-    console.log(this.props);
+  componentDidMount() {   
     this.myChart = new Chart(this.chartRef.current, {
       type: 'horizontalBar',
       
