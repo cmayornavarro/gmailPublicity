@@ -9,11 +9,12 @@ import {
   CardDeck,
   Spinner,
 } from "react-bootstrap";
-import "./App.css";
-import dataSVG from "./svg/data.svg";
-import mappingSVG from "./svg/mapping.svg";
-import serverBaseSVG from "./svg/serverBase.svg";
-import supportSVG from "./svg/support.svg";
+//SVG
+import "./../css/App.css";
+import dataSVG from "./../svg/data.svg";
+import mappingSVG from "./../svg/mapping.svg";
+import serverBaseSVG from "./../svg/serverBase.svg";
+import supportSVG from "./../svg/support.svg";
 
 export default class AdminPage extends React.Component {
   constructor(props) {

@@ -1,9 +1,10 @@
 import * as React from "react";
-import gmailSGV from "./svg/gmail.svg";
-import sadSGV from "./svg/sad.svg";
-import forbiddenSGV from "./svg/forbidden.svg";
-import billboardSGV from "./svg/billboard.svg";
+import gmailSGV from "./../svg/gmail.svg";
+import sadSGV from "./../svg/sad.svg";
+import forbiddenSGV from "./../svg/forbidden.svg";
+import billboardSGV from "./../svg/billboard.svg";
 import { Modal, Button } from "react-bootstrap";
+
 export default class Home extends React.Component {
 	constructor(props) {
 		super(props);

@@ -1,11 +1,11 @@
 import * as React from "react";
 import LineChart from "./LineChart.js";
 import { Card, CardDeck, Spinner } from "react-bootstrap";
-import "./App.css";
-import optionsSGV from "./svg/options.svg";
-import spamSVG from "./svg/spam.svg";
-import graphSVG from "./svg/graph.svg";
-import emailSVG from "./svg/email.svg";
+import "./../css/App.css";
+import optionsSGV from "./../svg/options.svg";
+import spamSVG from "./../svg/spam.svg";
+import graphSVG from "./../svg/graph.svg";
+import emailSVG from "./../svg/email.svg";
 
 export default class AdminPage extends React.Component {
   constructor(props) {

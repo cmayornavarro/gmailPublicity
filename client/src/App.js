@@ -4,13 +4,15 @@ import { Navbar, Nav } from "react-bootstrap";
 import GoogleLogin from "react-google-login";
 import { GoogleLogout } from "react-google-login";
 
-import AdminPage from "./AdminPage.js";
-import AdAnalysis from "./AdAnalysis.js";
-import Home from "./home.js";
-
+// components
+import AdminPage from "./components/AdminPage.js";
+import AdAnalysis from "./components/AdAnalysis.js";
+import Home from "./components/Home.js";
+// CSS
+import "./css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import logo from "./logo.svg";
+//SVG
+import logo from "./svg/logo.svg";
 
 class App extends Component {
   constructor(props) {
