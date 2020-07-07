@@ -51,7 +51,7 @@ export default class AdminPage extends React.Component {
         });
       }
 
-      return body;
+     
     } catch (error) {
       console.log(error);
     }
