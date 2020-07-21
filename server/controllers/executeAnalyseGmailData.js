@@ -54,9 +54,7 @@ function getEmailsByPage(gmail, auth, emailAddress, nextPage) {
 					return message;
 				});
 				Promise.all(promise)
-					.then(function () {
-						console.log("yes");
-					})
+					.then(function () {})
 					.catch(function (err) {
 						console.log("err " + err);
 					});
@@ -71,7 +69,7 @@ function getEmailsByPage(gmail, auth, emailAddress, nextPage) {
 					// delete loading data
 					executeDeleteLoadingData(emailAddress);
 				}
-				deferred.resolve("test2 ");
+				deferred.resolve("getEmailsByPage ");
 			} else {
 				console.log("No labels found.");
 			}
@@ -100,7 +98,6 @@ function analyseEmails(auth, nextPage) {
 }
 
 async function getEmailInformation(auth, id, emailAddress) {
-	console.log("init");
 	var deferred2 = Q.defer();
 	var arrayOfPromise = [];
 	const gmail = google.gmail({ version: "v1", auth });
@@ -138,12 +135,12 @@ async function getEmailInformation(auth, id, emailAddress) {
 			}
 		}
 	);
-
-	
 }
 
 const insertData = async function (indexName, data, id) {
-	console.log(id);
+	if (id != undefined) {
+		console.log("id: " + id);
+	}
 	return await esClient.index({
 		index: indexName,
 		id: id, // is needed for modify data
@@ -171,9 +168,7 @@ var executeGmailData = async function (req, res) {
 			res.send("analyzing data");
 			// execute the anlysis
 			analyseEmails(oauth2Client)
-				.then(function () {
-					console.log("executeDeleteLoadingData");					
-				})
+				.then(function () {})
 				.catch(function (err) {
 					console.log("error: " + err);
 				});
