@@ -17,9 +17,6 @@ var executeDeleteLoadingData = require("./elasticOperations/deleteLoadingData.js
 var executeAnalyseGmailData = require("./controllers/executeAnalyseGmailData.js");
 var executeGetMyGmailData = require("./controllers/executeGetMyGmailData.js");
 var executeGetLoadingData = require("./controllers/executeGetLoadingData.js");
-var executeGetGmailValidation = require("./controllers/executeGetGmailValidation.js");
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,7 +35,6 @@ app.route("/api/addMapping").post(executeAddMapping);
 app.route("/api/insertData").post(executeInsert);
 // api
 app.route("/api/analyseGmailData").post(executeAnalyseGmailData);
-app.route("/api/getGmailValidation").get(executeGetGmailValidation);
 app.route("/api/getMyGmailData").get(executeGetMyGmailData);
 app.route("/api/getLoadingData").get(executeGetLoadingData);
  // empty the loading index
