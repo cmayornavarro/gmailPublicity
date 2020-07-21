@@ -139,7 +139,7 @@ async function getEmailInformation(auth, id, emailAddress) {
 		}
 	);
 
-	console.log("final ");
+	
 }
 
 const insertData = async function (indexName, data, id) {
@@ -171,9 +171,8 @@ var executeGmailData = async function (req, res) {
 			res.send("analyzing data");
 			// execute the anlysis
 			analyseEmails(oauth2Client)
-				.then(function (a) {
-					console.log("executeDeleteLoadingData 2 " + a);
-					// executeDeleteLoadingData(emailUser);
+				.then(function () {
+					console.log("executeDeleteLoadingData");					
 				})
 				.catch(function (err) {
 					console.log("error: " + err);

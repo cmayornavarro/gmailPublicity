@@ -2,7 +2,7 @@ var constants = require("./../elasticOperations/constants.js");
 const esClient = require("./../elasticOperations/client");
 
 const searchData = async function (indexName, query) {
-	console.log("search data getMyGmailData");
+	
 	return await esClient.search({
 		index: indexName,
 		body: query,
