@@ -74,7 +74,7 @@ export default class AdminPage extends React.Component {
         newData.push({ count: bucket.key, company: bucket.doc_count })
       );
 
-      newDataPush.push({ title: "My adds", data: newData });
+      newDataPush.push({ title: "My ads", data: newData });
 
       if (response.status !== 200) throw Error(body.message);
       this.setState({
